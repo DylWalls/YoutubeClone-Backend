@@ -10,7 +10,7 @@ connectDB();
 
 app.use(cors());
 app.use(express.json());
-app.use('api/comments', comments);
+app.use('/api/comments', comments);
 
 
 const port = process.env.PORT || 5000;
