@@ -28,6 +28,26 @@ router.get('/', async (req, res) => {
     } catch (ex) {
       return res.status(500).send(`Internal Server Error: ${ex}`);
     }
+  }); 
+
+
+
+  router.get("/:commentid", async (req, res) => {
+    try {
+      const { error } = validateVideo(req.body);
+      if (error) return res.status(400).send(error);
+  
+      const video = new Video({
+        comments: req.body.comments,
+        replies: req.body.replies,
+      });
+  
+      await video.save();
+  
+      return res.send(video);
+    } catch (ex) {
+      return res.status(500).send(`Internal Server Error: ${ex}`);
+    }
   });
   
   
@@ -51,6 +71,34 @@ router.get('/', async (req, res) => {
       return res.status(500).send(`Internal Server Error: ${ex}`);
     }
   });
+
+
+  router.post("/:commentsid", async (req, res) => {
+    try {
+      const { error } = validateVideo(req.body);
+      if (error) return res.status(400).send(error);
+  
+      const video = new Video({
+        comments: req.body.comments,
+        replies: req.body.replies,
+      });
+  
+      await video.save();
+  
+      return res.send(video);
+    } catch (ex) {
+      return res.status(500).send(`Internal Server Error: ${ex}`);
+    }
+  });
+
+
+
+
+
+
+
+
+
   
   router.put("/:videosid", async (req, res) => {
     try {
