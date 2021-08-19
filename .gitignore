@@ -49,6 +49,7 @@ TestResult.xml
 nunit-*.xml
 
 config/
+default.json
 
 
 # Build Results of an ATL Project
