@@ -16,12 +16,12 @@ router.get('/', async (req, res) => {
   
   
   //Replying to Certain Comments
-  router.get("/:commentsid", async (req, res) => {
+  router.get("/:commentsId", async (req, res) => {
     try {
-      const comment = await Comment.findById(req.params.commentsid);
+      const comment = await Comment.findById(req.params.commentsId);
   
       if (!comment)
-        return res.status(400).send(`The comment with id "${req.params.commentsid}" 
+        return res.status(400).send(`The comment with id "${req.params.commentsId}" 
         does not exist.`);
   
       return res.send(comment);
@@ -29,9 +29,7 @@ router.get('/', async (req, res) => {
       return res.status(500).send(`Internal Server Error: ${ex}`);
     }
   });
-  
-  
-  
+
   
   //Normal comment on video
   router.post("/", async (req, res) => {
@@ -52,18 +50,37 @@ router.get('/', async (req, res) => {
     }
   });
 
+    // Posting Reply to Specific Comment
+    router.post("/:commentId", async (req, res) => {
+      try {
+        const comment = await Comment.findById(req.params.commentId);
+        const { error } = validateReply(req.body);
+        if (error) return res.status(400).send(error);
+    
+        const reply = new Reply({
+          replyText: req.body.replyText,
+        });
+        comment.replies.push(reply)
+        await comment.save();
+    
+        return res.send(comment);
+      } catch (ex) {
+        return res.status(500).send(`Internal Server Error: ${ex}`);
+      }
+    });
+
 
   //Searching for Comment by ID
-  router.put("/:commentsid", async (req, res) => {
+  router.put("/:commentsId", async (req, res) => {
     try {
       const { error } = validateComment(req.body);
       if (error) return res.status(400).send(error);
   
       const comment = await Comment.findByIdAndUpdate(
-        req.params.commentsid,
+        req.params.commentsId,
         {
-            comments: req.body.comments,
-            replies: req.body.replies,
+            commentText: req.body.commentText,
+            replyText: req.body.replyText,
         },
         { new: true }
       );
@@ -82,13 +99,13 @@ router.get('/', async (req, res) => {
   
   
   //Deletes Comments
-  router.delete("/:commentsid", async (req, res) => {
+  router.delete("/:commentsId", async (req, res) => {
     try {
   
-      const comment = await Comment.findByIdAndRemove(req.params.commentsid);
+      const comment = await Comment.findByIdAndRemove(req.params.commentsId);
       
       if (!comment)
-        return res.status(400).send(`The comment with id "${req.params.commentsid}" 
+        return res.status(400).send(`The comment with id "${req.params.commentsId}" 
         does not exist.`);
   
       return res.send(comment);
