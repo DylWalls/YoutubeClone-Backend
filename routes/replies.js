@@ -1,12 +1,18 @@
 const express = require("express");
+const { Reply, validateReply } = require("../models/comment");
 const router = express.Router();
 
 
-
+// Normal Get
+// Find Reply by ID
+// Add Reply to CommentID
+// Delete Reply
+// 
+// Generic Get All
 router.get('/', async (req, res) => {
     try {
-      const videos = await Video.find();
-      return res.send(videos);
+      const replies = await Reply.find();
+      return res.send(replies);
     } catch (ex) {
         return res.status(500).send(`Internal Server Error: ${ex}`); 
   
@@ -15,129 +21,78 @@ router.get('/', async (req, res) => {
   
   
   
-  
-  router.get("/:videosid", async (req, res) => {
+  // Get Specific Replies
+  router.get("/:repliesid", async (req, res) => {
     try {
-      const video = await Video.findById(req.params.videosid);
+      const reply = await Reply.findById(req.params.repliesid);
   
-      if (!video)
-        return res.status(400).send(`The video with id "${req.params.videosid}" 
+      if (!reply)
+        return res.status(400).send(`The reply with id "${req.params.repliesid}" 
         does not exist.`);
   
-      return res.send(video);
+      return res.send(reply);
     } catch (ex) {
       return res.status(500).send(`Internal Server Error: ${ex}`);
     }
   }); 
 
 
-
-  router.get("/:commentid", async (req, res) => {
+// Putting Reply on specific comments
+  router.put("/:repliesid", async (req, res) => {
     try {
-      const { error } = validateVideo(req.body);
+      const { error } = validateReply(req.body);
       if (error) return res.status(400).send(error);
   
-      const video = new Video({
-        comments: req.body.comments,
-        replies: req.body.replies,
-      });
-  
-      await video.save();
-  
-      return res.send(video);
-    } catch (ex) {
-      return res.status(500).send(`Internal Server Error: ${ex}`);
-    }
-  });
-  
-  
-  
-  
-  
-  router.post("/", async (req, res) => {
-    try {
-      const { error } = validateVideo(req.body);
-      if (error) return res.status(400).send(error);
-  
-      const video = new Video({
-        comments: req.body.comments,
-        replies: req.body.replies,
-      });
-  
-      await video.save();
-  
-      return res.send(video);
-    } catch (ex) {
-      return res.status(500).send(`Internal Server Error: ${ex}`);
-    }
-  });
-
-
-  router.post("/:commentsid", async (req, res) => {
-    try {
-      const { error } = validateVideo(req.body);
-      if (error) return res.status(400).send(error);
-  
-      const video = new Video({
-        comments: req.body.comments,
-        replies: req.body.replies,
-      });
-  
-      await video.save();
-  
-      return res.send(video);
-    } catch (ex) {
-      return res.status(500).send(`Internal Server Error: ${ex}`);
-    }
-  });
-
-
-
-
-
-
-
-
-
-  
-  router.put("/:videosid", async (req, res) => {
-    try {
-      const { error } = validateVideo(req.body);
-      if (error) return res.status(400).send(error);
-  
-      const video = await Video.findByIdAndUpdate(
-        req.params.videosid,
+      const reply = await Reply.findByIdAndUpdate(
+        req.params.repliesid,
         {
-            comments: req.body.comments,
-            replies: req.body.replies,
+            commentText: req.body.commentText,
+            replyText: req.body.replyText,
         },
         { new: true }
       );
-      if (!video)
-        return res.status(400).send(`The video with id "${req.params.id}" 
+      if (!reply)
+        return res.status(400).send(`The reply with id "${req.params.id}" 
         does not exist.`);
   
-      await video.save();
+      await reply.save();
   
-      return res.send(video);
+      return res.send(reply);
     } catch (ex) {
       return res.status(500).send(`Internal Server Error: ${ex}`);
     }
   });
+
+  // Posting Reply to Specific Comment
+  router.post("/:repliesid", async (req, res) => {
+    try {
+      const { error } = validateReply(req.body);
+      if (error) return res.status(400).send(error);
   
+      const reply = new Reply({
+        commentText: req.body.commentText,
+        replyText: req.body.replyText,
+      });
   
+      await reply.save();
   
-  
-  router.delete("/:videosid", async (req, res) => {
+      return res.send(reply);
+    } catch (ex) {
+      return res.status(500).send(`Internal Server Error: ${ex}`);
+    }
+  });
+
+// Reply Delete
+  router.delete("/:repliesid", async (req, res) => {
     try {
   
-      const video = await Video.findByIdAndRemove(req.params.videosid);
+      const reply = await Reply.findByIdAndRemove(req.params.repliesid);
       
-      if (!video)
-        return res.status(400).send(`The video with id "${req.params.videosid}" 
+      if (!reply)
+        return res.status(400).send(`The reply with id "${req.params.repliesid}" 
         does not exist.`);
   
-      return res.send(video);
+      return res.send(reply);
   
     } catch (ex) {
         return res.status(500).send(`Internal Server Error: ${ex}`);
