@@ -39,7 +39,10 @@ router.get('/', async (req, res) => {
       if (error) return res.status(400).send(error);
   
       const comment = new Comment({
+        userName: req.body.userName,
         commentText: req.body.commentText,
+        like: req.body.like,
+        dislike: req.body.dislike,
         replies: [],
       });
   

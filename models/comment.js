@@ -8,8 +8,11 @@ const replySchema = new mongoose.Schema({
 });
 
 const commentSchema = new mongoose.Schema({
+    userName: {type: String, required: true},
     commentText: { type: String, required: true, minLength: 2, maxLength: 255 }, 
-    replies : [{type: replySchema}]
+    like: {type: Number},
+    dislike: {type: Number},
+    replies: [{type: replySchema}]
 });
 
 
@@ -21,7 +24,10 @@ const Reply = mongoose.model('Reply', replySchema);
 
 function validateComment(comment){
     const schema = Joi.object({
+        username: Joi.string().required(),
         commentText: Joi.string().min(2).max(255).required(),
+        like: Joi.number(),
+        dislike: Joi.number(),
         replies: Joi.array(),
     });
     return schema.validate(comment);
