@@ -34,6 +34,7 @@ router.get('/', async (req, res) => {
   //Normal comment on video
   router.post("/", async (req, res) => {
     try {
+      const comments = await Comment.find();
       const { error } = validateComment(req.body);
       if (error) return res.status(400).send(error);
   
@@ -44,7 +45,7 @@ router.get('/', async (req, res) => {
   
       await comment.save();
   
-      return res.send(comment);
+      return res.send(comments);
     } catch (ex) {
       return res.status(500).send(`Internal Server Error: ${ex}`);
     }
