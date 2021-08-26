@@ -12,7 +12,8 @@ const commentSchema = new mongoose.Schema({
     commentText: { type: String, required: true, minLength: 2, maxLength: 255 }, 
     like: {type: Number},
     dislike: {type: Number},
-    replies: [{type: replySchema}]
+    replies: [{type: replySchema}],
+    videoId:{type:String}
 });
 
 
@@ -24,11 +25,12 @@ const Reply = mongoose.model('Reply', replySchema);
 
 function validateComment(comment){
     const schema = Joi.object({
-        username: Joi.string().required(),
+        userName: Joi.string().required(),
         commentText: Joi.string().min(2).max(255).required(),
         like: Joi.number(),
         dislike: Joi.number(),
         replies: Joi.array(),
+        videoId: Joi.string(),
     });
     return schema.validate(comment);
 }
